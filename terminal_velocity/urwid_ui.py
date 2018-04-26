@@ -10,8 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 import urwid
-import notebook
-
+from .notebook import *
 
 palette = [
     ("placeholder", "dark blue", "default"),
@@ -240,7 +239,7 @@ class MainFrame(urwid.Frame):
     def __init__(self, notes_dir, editor, extension, extensions, exclude=None):
 
         self.editor = editor
-        self.notebook = notebook.PlainTextNoteBook(notes_dir, extension,
+        self.notebook = PlainTextNoteBook(notes_dir, extension,
                 extensions, exclude=exclude)
 
         # Don't filter the note list when the text in the search box changes.
@@ -329,12 +328,12 @@ class MainFrame(urwid.Frame):
                     try:
                         note = self.notebook.add_new(self.search_box.edit_text)
                         system(self.editor + ' ' + pipes.quote(note.abspath), self.loop)
-                    except notebook.NoteAlreadyExistsError:
+                    except NoteAlreadyExistsError:
                         # Try to open the existing note instead.
                         system(self.editor + ' ' + pipes.quote(self.search_box.edit_text +
                                 self.notebook.extension),
                             self.loop)
-                    except notebook.InvalidNoteTitleError:
+                    except InvalidNoteTitleError:
                         # TODO: Display error message to user.
                         pass
                 else:
